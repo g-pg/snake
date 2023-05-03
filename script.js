@@ -40,7 +40,7 @@ function setStart() {
 }
 
 function drawGame() {
-	if (gameOver) return showGameOver();
+	if (gameOver) return showGameOver(gameOver);
 	if (!gamePaused) {
 		drawBoard();
 		drawFood();
@@ -104,7 +104,7 @@ function checkFoodCollision() {
 
 function checkWallsCollision() {
 	if (headX < 0 || headY < 0 || headX >= blockSize * rows || headY >= blockSize * cols) {
-		gameOver = true;
+		gameOver = "lost";
 	}
 	console.log(headY);
 }
@@ -112,7 +112,7 @@ function checkTailCollision() {
 	for (let i = snakeParts.length - 1; i > 1; i--) {
 		const part = snakeParts[i];
 		if (headX === part.x && headY === part.y) {
-			gameOver = true;
+			gameOver = "lost";
 		}
 	}
 }
@@ -121,19 +121,25 @@ function drawScore() {
 	ctx.fillStyle = "white";
 	ctx.font = "18px Comic Sans MS";
 	ctx.fillText("scor:  " + score, (blockSize * cols) / 2 - 18, 30);
+
+	if (score === 50) {
+		gameOver = "won";
+	}
 }
-function showGameOver() {
+function showGameOver(motive) {
 	drawBoard();
+	const msg = motive === "won" ? "congratz! u snekd gud" : "u snekd";
 	ctx.fillStyle = "white";
 	ctx.font = "30px Comic Sans MS";
-	ctx.fillText("u snekd", (blockSize * rows) / 2 - blockSize, (blockSize * cols) / 2);
+	ctx.fillText(msg, (blockSize * rows) / 2 - blockSize * 3, (blockSize * cols) / 2);
 	ctx.font = "20px Comic Sans MS";
 	ctx.fillText(
 		"press spece to snek again",
-		(blockSize * rows) / 2 - blockSize,
+		(blockSize * rows) / 2 - blockSize * 3,
 		(blockSize * cols) / 2 + blockSize * 2
 	);
 }
+
 document.addEventListener("keydown", (e) => moveSnake(e));
 function moveSnake(e) {
 	console.log(e.key);
